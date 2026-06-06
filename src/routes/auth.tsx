@@ -63,20 +63,6 @@ function AuthPage() {
     }
   }
 
-  async function google() {
-    try {
-      const { lovable } = await import("@/integrations/lovable/index").catch(() => ({ lovable: null as any }));
-      if (!lovable) {
-        toast.error("Google sign-in not yet configured. Use email for now.");
-        return;
-      }
-      const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/dashboard` });
-      if (r.error) toast.error(r.error.message ?? "Google sign-in failed");
-    } catch {
-      toast.error("Google sign-in unavailable");
-    }
-  }
-
   return (
     <div className="min-h-screen grid place-items-center px-4">
       <motion.div
@@ -112,13 +98,6 @@ function AuthPage() {
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : mode === "signin" ? "Sign in" : "Create account"}
           </Button>
         </form>
-
-        <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
-          <div className="h-px flex-1 bg-border" /> or <div className="h-px flex-1 bg-border" />
-        </div>
-        <Button variant="outline" className="w-full" onClick={google}>
-          Continue with Google
-        </Button>
 
         <p className="mt-6 text-sm text-muted-foreground text-center">
           {mode === "signin" ? "No account?" : "Already a member?"}{" "}
