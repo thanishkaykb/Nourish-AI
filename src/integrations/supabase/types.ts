@@ -14,7 +14,168 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      food_logs: {
+        Row: {
+          calories: number
+          carbs_g: number
+          created_at: string
+          description: string | null
+          fat_g: number
+          id: string
+          image_url: string | null
+          logged_at: string
+          meal_type: string | null
+          name: string
+          protein_g: number
+          serving: string | null
+          user_id: string
+        }
+        Insert: {
+          calories?: number
+          carbs_g?: number
+          created_at?: string
+          description?: string | null
+          fat_g?: number
+          id?: string
+          image_url?: string | null
+          logged_at?: string
+          meal_type?: string | null
+          name: string
+          protein_g?: number
+          serving?: string | null
+          user_id: string
+        }
+        Update: {
+          calories?: number
+          carbs_g?: number
+          created_at?: string
+          description?: string | null
+          fat_g?: number
+          id?: string
+          image_url?: string | null
+          logged_at?: string
+          meal_type?: string | null
+          name?: string
+          protein_g?: number
+          serving?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      measurements: {
+        Row: {
+          arm_cm: number | null
+          body_fat_pct: number | null
+          chest_cm: number | null
+          created_at: string
+          hips_cm: number | null
+          id: string
+          notes: string | null
+          recorded_at: string
+          thigh_cm: number | null
+          user_id: string
+          waist_cm: number | null
+          weight_kg: number | null
+        }
+        Insert: {
+          arm_cm?: number | null
+          body_fat_pct?: number | null
+          chest_cm?: number | null
+          created_at?: string
+          hips_cm?: number | null
+          id?: string
+          notes?: string | null
+          recorded_at?: string
+          thigh_cm?: number | null
+          user_id: string
+          waist_cm?: number | null
+          weight_kg?: number | null
+        }
+        Update: {
+          arm_cm?: number | null
+          body_fat_pct?: number | null
+          chest_cm?: number | null
+          created_at?: string
+          hips_cm?: number | null
+          id?: string
+          notes?: string | null
+          recorded_at?: string
+          thigh_cm?: number | null
+          user_id?: string
+          waist_cm?: number | null
+          weight_kg?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          activity_level: string | null
+          age: number | null
+          carbs_goal_g: number
+          created_at: string
+          daily_calorie_goal: number
+          display_name: string | null
+          email: string | null
+          fat_goal_g: number
+          goal_type: string
+          height_cm: number | null
+          id: string
+          last_log_date: string | null
+          measurement_cadence: string
+          onboarded: boolean
+          protein_goal_g: number
+          sex: string | null
+          starting_weight_kg: number | null
+          streak: number
+          target_weight_kg: number | null
+          updated_at: string
+        }
+        Insert: {
+          activity_level?: string | null
+          age?: number | null
+          carbs_goal_g?: number
+          created_at?: string
+          daily_calorie_goal?: number
+          display_name?: string | null
+          email?: string | null
+          fat_goal_g?: number
+          goal_type?: string
+          height_cm?: number | null
+          id: string
+          last_log_date?: string | null
+          measurement_cadence?: string
+          onboarded?: boolean
+          protein_goal_g?: number
+          sex?: string | null
+          starting_weight_kg?: number | null
+          streak?: number
+          target_weight_kg?: number | null
+          updated_at?: string
+        }
+        Update: {
+          activity_level?: string | null
+          age?: number | null
+          carbs_goal_g?: number
+          created_at?: string
+          daily_calorie_goal?: number
+          display_name?: string | null
+          email?: string | null
+          fat_goal_g?: number
+          goal_type?: string
+          height_cm?: number | null
+          id?: string
+          last_log_date?: string | null
+          measurement_cadence?: string
+          onboarded?: boolean
+          protein_goal_g?: number
+          sex?: string | null
+          starting_weight_kg?: number | null
+          streak?: number
+          target_weight_kg?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
