@@ -10,30 +10,37 @@ import { motion } from "framer-motion";
 import { z } from "zod";
 
 export const Route = createFileRoute("/auth")({
+  ssr: false,
   head: () => ({
     meta: [
-      { title: "Sign in — Macro" },
-      { name: "description", content: "Sign in or create your Macro account to start tracking calories with AI." },
+      { title: "Sign in — Nourish AI" },
+      { name: "description", content: "Sign in or create your Nourish AI account to start tracking calories with AI." },
     ],
   }),
   component: AuthPage,
 });
 
-const schema = z.object({
+const signinSchema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
   password: z.string().min(8, "At least 8 characters").max(72),
+});
+const signupSchema = signinSchema.extend({
+  name: z.string().trim().min(1, "Please enter your name").max(80),
 });
 
 function AuthPage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    const parsed = schema.safeParse({ email, password });
+    const parsed = mode === "signup"
+      ? signupSchema.safeParse({ name, email, password })
+      : signinSchema.safeParse({ email, password });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
@@ -41,10 +48,14 @@ function AuthPage() {
     setLoading(true);
     try {
       if (mode === "signup") {
+        const data = parsed.data as { name: string; email: string; password: string };
         const { error } = await supabase.auth.signUp({
-          email: parsed.data.email,
-          password: parsed.data.password,
-          options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+          email: data.email,
+          password: data.password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/dashboard`,
+            data: { display_name: data.name },
+          },
         });
         if (error) throw error;
         toast.success("Check your email to confirm your account.");
@@ -53,7 +64,14 @@ function AuthPage() {
           email: parsed.data.email,
           password: parsed.data.password,
         });
-        if (error) throw error;
+        if (error) {
+          const msg = /invalid login/i.test(error.message)
+            ? "Your email or password is incorrect."
+            : /not confirmed|confirm/i.test(error.message)
+            ? "Please confirm your email first — check your inbox."
+            : error.message;
+          throw new Error(msg);
+        }
         navigate({ to: "/dashboard" });
       }
     } catch (err: any) {
@@ -74,7 +92,7 @@ function AuthPage() {
           <div className="h-10 w-10 rounded-xl bg-primary grid place-items-center mint-glow">
             <Flame className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="font-display text-3xl">Macro</span>
+          <span className="font-display text-3xl">Nourish AI</span>
         </div>
         <h1 className="font-display text-4xl mb-2">
           {mode === "signin" ? "Welcome back." : "Start your journey."}
@@ -84,6 +102,13 @@ function AuthPage() {
         </p>
 
         <form onSubmit={submit} className="space-y-4">
+          {mode === "signup" && (
+            <div>
+              <Label htmlFor="name">Your name</Label>
+              <Input id="name" type="text" required autoComplete="name"
+                value={name} onChange={(e) => setName(e.target.value)} placeholder="What should we call you?" />
+            </div>
+          )}
           <div>
             <Label htmlFor="email">Email</Label>
             <Input id="email" type="email" required autoComplete="email"

@@ -7,9 +7,9 @@ import { motion } from "framer-motion";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Macro — AI calorie & macro tracker" },
+      { title: "Nourish AI — AI calorie & macro tracker" },
       { name: "description", content: "Snap a photo, get calories and macros in seconds. Track your diet, body, and streak — powered by AI." },
-      { property: "og:title", content: "Macro — AI calorie & macro tracker" },
+      { property: "og:title", content: "Nourish AI — AI calorie & macro tracker" },
       { property: "og:description", content: "Snap. Track. Transform. AI-powered calorie tracking with weekly body progress." },
     ],
   }),
@@ -24,7 +24,7 @@ function Index() {
           <div className="h-9 w-9 rounded-xl bg-primary grid place-items-center mint-glow">
             <Flame className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="font-display text-2xl">Macro</span>
+          <span className="font-display text-2xl">Nourish AI</span>
         </div>
         <Link to="/auth">
           <Button variant="ghost" size="sm">Sign in</Button>

@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const nav = [
   { to: "/dashboard", label: "Today", icon: Home },
@@ -32,7 +33,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="h-9 w-9 rounded-xl bg-primary grid place-items-center mint-glow">
             <Flame className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="font-display text-2xl">Macro</span>
+          <span className="font-display text-2xl">Nourish AI</span>
         </Link>
         <nav className="flex-1 space-y-1">
           {nav.map((n) => {
@@ -51,12 +52,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             );
           })}
         </nav>
-        <Button variant="ghost" onClick={signOut} className="justify-start gap-3 text-muted-foreground">
-          <LogOut className="h-4 w-4" /> Sign out
-        </Button>
+        <div className="flex items-center justify-between gap-2">
+          <Button variant="ghost" onClick={signOut} className="justify-start gap-3 text-muted-foreground flex-1">
+            <LogOut className="h-4 w-4" /> Sign out
+          </Button>
+          <ThemeToggle />
+        </div>
       </aside>
 
-      <main className="p-4 md:p-10 max-w-6xl mx-auto">{children}</main>
+      <main className="p-4 md:p-10 max-w-6xl mx-auto">
+        <div className="md:hidden flex justify-end mb-2"><ThemeToggle /></div>
+        {children}
+      </main>
 
       {/* Mobile bottom nav */}
       <motion.nav
