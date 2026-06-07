@@ -98,6 +98,36 @@
   --sidebar-ring: oklch(0.82 0.18 165);
 }
 
+:root.light {
+  --background: oklch(0.98 0.005 240);
+  --foreground: oklch(0.20 0.03 240);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.20 0.03 240);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.20 0.03 240);
+  --primary: oklch(0.55 0.16 165);
+  --primary-foreground: oklch(0.98 0.005 150);
+  --secondary: oklch(0.94 0.01 230);
+  --secondary-foreground: oklch(0.22 0.03 240);
+  --muted: oklch(0.94 0.01 235);
+  --muted-foreground: oklch(0.48 0.02 240);
+  --accent: oklch(0.88 0.05 165);
+  --accent-foreground: oklch(0.20 0.03 240);
+  --border: oklch(0.20 0.03 240 / 10%);
+  --input: oklch(0.20 0.03 240 / 12%);
+  --ring: oklch(0.55 0.16 165);
+  --mint: oklch(0.55 0.16 165);
+  --mint-glow: oklch(0.65 0.18 160);
+  --protein: oklch(0.55 0.16 165);
+  --carbs: oklch(0.65 0.16 70);
+  --fat: oklch(0.60 0.18 25);
+  --sidebar: oklch(0.99 0.005 240);
+  --sidebar-foreground: oklch(0.22 0.03 240);
+  --sidebar-accent: oklch(0.94 0.01 235);
+  --sidebar-accent-foreground: oklch(0.22 0.03 240);
+  --sidebar-border: oklch(0.20 0.03 240 / 10%);
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
@@ -120,6 +150,18 @@
   background: linear-gradient(180deg, oklch(0.22 0.035 235 / 0.85), oklch(0.18 0.03 240 / 0.7));
   border: 1px solid oklch(1 0 0 / 8%);
   backdrop-filter: blur(12px);
+}
+
+:root.light .glass-card,
+:root.light [class*="glass-card"] {
+  background: linear-gradient(180deg, oklch(1 0 0 / 0.95), oklch(0.97 0.005 240 / 0.85)) !important;
+  border: 1px solid oklch(0.20 0.03 240 / 10%) !important;
+}
+
+:root.light body {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, oklch(0.82 0.12 165 / 0.18), transparent),
+    radial-gradient(ellipse 50% 40% at 90% 100%, oklch(0.68 0.16 250 / 0.10), transparent);
 }
 
 @utility mint-glow {
