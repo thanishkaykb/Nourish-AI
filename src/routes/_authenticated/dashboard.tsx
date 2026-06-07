@@ -4,11 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { getProfile } from "@/lib/profile";
 import { MacroRing } from "@/components/macro-ring";
 import { Button } from "@/components/ui/button";
-import { Camera, Flame, Trash2 } from "lucide-react";
+import { Camera, Flame, Pencil, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
@@ -17,6 +20,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 function Dashboard() {
   const navigate = useNavigate();
   const profileQ = useQuery({ queryKey: ["profile"], queryFn: getProfile });
+  const [editing, setEditing] = useState<any | null>(null);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (profileQ.data && !profileQ.data.onboarded) navigate({ to: "/onboarding" });
@@ -40,6 +45,26 @@ function Dashboard() {
     const { error } = await supabase.from("food_logs").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
     toast.success("Deleted");
+    logsQ.refetch();
+  }
+
+  async function saveEdit() {
+    if (!editing) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("food_logs")
+      .update({
+        name: editing.name,
+        calories: Number(editing.calories) || 0,
+        protein_g: Number(editing.protein_g) || 0,
+        carbs_g: Number(editing.carbs_g) || 0,
+        fat_g: Number(editing.fat_g) || 0,
+      })
+      .eq("id", editing.id);
+    setSaving(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Updated");
+    setEditing(null);
     logsQ.refetch();
   }
 
@@ -115,6 +140,9 @@ function Dashboard() {
                   </div>
                 </div>
                 <div className="font-display text-2xl text-primary">{Math.round(l.calories)}</div>
+                <Button size="icon" variant="ghost" onClick={() => setEditing({ ...l })}>
+                  <Pencil className="h-4 w-4 text-muted-foreground" />
+                </Button>
                 <Button size="icon" variant="ghost" onClick={() => deleteLog(l.id)}>
                   <Trash2 className="h-4 w-4 text-muted-foreground" />
                 </Button>
@@ -123,6 +151,51 @@ function Dashboard() {
           </ul>
         )}
       </section>
+
+      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
+        <DialogContent className="glass-card">
+          <DialogHeader>
+            <DialogTitle className="font-display text-2xl">Edit meal</DialogTitle>
+          </DialogHeader>
+          {editing && (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="e-name">Name</Label>
+                <Input id="e-name" value={editing.name ?? ""}
+                  onChange={(e) => setEditing({ ...editing, name: e.target.value })} />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="e-cal">Calories</Label>
+                  <Input id="e-cal" type="number" value={editing.calories ?? 0}
+                    onChange={(e) => setEditing({ ...editing, calories: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="e-p">Protein (g)</Label>
+                  <Input id="e-p" type="number" value={editing.protein_g ?? 0}
+                    onChange={(e) => setEditing({ ...editing, protein_g: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="e-c">Carbs (g)</Label>
+                  <Input id="e-c" type="number" value={editing.carbs_g ?? 0}
+                    onChange={(e) => setEditing({ ...editing, carbs_g: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="e-f">Fat (g)</Label>
+                  <Input id="e-f" type="number" value={editing.fat_g ?? 0}
+                    onChange={(e) => setEditing({ ...editing, fat_g: e.target.value })} />
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditing(null)}>Cancel</Button>
+            <Button onClick={saveEdit} disabled={saving} className="mint-glow">
+              {saving ? "Saving…" : "Save"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
