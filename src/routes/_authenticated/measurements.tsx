@@ -73,20 +73,11 @@ function Measurements() {
     p?.goal_type === "lose_weight" ? (delta < 0 ? "yes" : delta === 0 ? "flat" : "no") :
     "neutral";
 
-  if (p && p.goal_type === "calorie") {
-    return (
-      <div className="max-w-xl mx-auto py-20 text-center glass-card rounded-3xl p-10">
-        <h2 className="font-display text-3xl mb-3">Body tracking is optional.</h2>
-        <p className="text-muted-foreground">Your goal is just calorie tracking — no measurements needed. You can switch goals anytime later.</p>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-8">
       <header>
         <h1 className="font-display text-5xl">Body progress</h1>
-        <p className="text-muted-foreground">Log {p?.measurement_cadence ?? "weekly"} to see if your diet is working.</p>
+        <p className="text-muted-foreground">Log your weight whenever you want — weekly or monthly works best. We'll plot the trend so you can see if your diet is working.</p>
       </header>
 
       <div className="grid md:grid-cols-3 gap-4">
@@ -98,7 +89,7 @@ function Measurements() {
         />
       </div>
 
-      {p?.goal_type === "lose_weight" && (
+      {(p?.goal_type === "lose_weight" || (target != null)) && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`glass-card rounded-2xl p-5 flex items-center gap-4 ${
           working === "yes" ? "border-primary/40 mint-glow" : ""
         }`}>
