@@ -33,14 +33,20 @@ function LogMeal() {
   const navigate = useNavigate();
   const analyze = useServerFn(analyzeFood);
   const fileRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [hint, setHint] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [result, setResult] = useState<Analysis | null>(null);
+  const [dragOver, setDragOver] = useState(false);
 
   function pickFile(f: File) {
+    if (!f.type.startsWith("image/")) {
+      toast.error("Please choose an image file.");
+      return;
+    }
     setFile(f);
     setResult(null);
     setPreview(URL.createObjectURL(f));
@@ -118,16 +124,31 @@ function LogMeal() {
       </header>
 
       {!preview ? (
-        <div className="glass-card rounded-3xl p-10 text-center">
+        <div
+          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragOver(false);
+            const f = e.dataTransfer.files?.[0];
+            if (f) pickFile(f);
+          }}
+          className={`glass-card rounded-3xl p-10 text-center transition-all ${dragOver ? "ring-2 ring-primary scale-[1.01]" : ""}`}
+        >
           <div className="h-20 w-20 rounded-2xl bg-primary/15 text-primary grid place-items-center mx-auto mb-6">
             <Camera className="h-10 w-10" />
           </div>
-          <h3 className="font-display text-2xl mb-2">Snap or upload a photo</h3>
-          <p className="text-sm text-muted-foreground mb-6">Good lighting helps the AI. Show the whole plate.</p>
+          <h3 className="font-display text-2xl mb-2">Snap, upload, or drop a photo</h3>
+          <p className="text-sm text-muted-foreground mb-6">Drag &amp; drop a picture here, take one with your camera, or browse files.</p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Button onClick={() => fileRef.current?.click()} className="gap-2 mint-glow"><Upload className="h-4 w-4" /> Choose photo</Button>
+            <Button onClick={() => cameraRef.current?.click()} className="gap-2 mint-glow"><Camera className="h-4 w-4" /> Take photo</Button>
+            <Button variant="secondary" onClick={() => fileRef.current?.click()} className="gap-2"><Upload className="h-4 w-4" /> Upload file</Button>
             <input
-              ref={fileRef} type="file" accept="image/*" capture="environment" hidden
+              ref={cameraRef} type="file" accept="image/*" capture="environment" hidden
+              onChange={(e) => e.target.files?.[0] && pickFile(e.target.files[0])}
+            />
+            <input
+              ref={fileRef} type="file" accept="image/*" hidden
               onChange={(e) => e.target.files?.[0] && pickFile(e.target.files[0])}
             />
           </div>
