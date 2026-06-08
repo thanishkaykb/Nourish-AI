@@ -1,22 +1,25 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Home, Camera, BarChart3, Ruler, LogOut, Flame } from "lucide-react";
+import { Home, Camera, BarChart3, Ruler, LogOut, Flame, Settings, Menu } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useState } from "react";
 
 const nav = [
   { to: "/dashboard", label: "Today", icon: Home },
   { to: "/log", label: "Log meal", icon: Camera },
   { to: "/history", label: "History", icon: BarChart3 },
   { to: "/measurements", label: "Body", icon: Ruler },
+  { to: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const loc = useLocation();
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const [open, setOpen] = useState(true);
 
   async function signOut() {
     await qc.cancelQueries();
@@ -26,9 +29,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen pb-24 md:pb-0 md:pl-64">
+    <div className={`min-h-screen ${open ? "pb-24 md:pb-0 md:pl-64" : ""}`}>
+      {/* Floating hamburger — always visible */}
+      <button
+        onClick={() => setOpen(!open)}
+        aria-label={open ? "Hide menu" : "Show menu"}
+        className="fixed top-3 left-3 z-50 h-10 w-10 grid place-items-center rounded-xl glass-card border border-border hover:bg-secondary transition-colors"
+      >
+        <Menu className="h-5 w-5" />
+      </button>
+
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 hidden md:flex flex-col w-64 border-r border-border glass-card p-6 z-40">
+      {open && (
+      <aside className="fixed inset-y-0 left-0 hidden md:flex flex-col w-64 border-r border-border glass-card p-6 pt-16 z-40">
         <Link to="/dashboard" className="flex items-center gap-2 mb-10">
           <div className="h-9 w-9 rounded-xl bg-primary grid place-items-center mint-glow">
             <Flame className="h-5 w-5 text-primary-foreground" />
@@ -59,17 +72,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <ThemeToggle />
         </div>
       </aside>
+      )}
 
-      <main className="p-4 md:p-10 max-w-6xl mx-auto">
+      <main className="p-4 md:p-10 max-w-6xl mx-auto pt-16">
         <div className="md:hidden flex justify-end mb-2"><ThemeToggle /></div>
         {children}
       </main>
 
       {/* Mobile bottom nav */}
+      {open && (
       <motion.nav
         initial={{ y: 60 }}
         animate={{ y: 0 }}
-        className="md:hidden fixed bottom-0 inset-x-0 z-40 glass-card border-t border-border px-2 py-2 grid grid-cols-4 gap-1"
+        className="md:hidden fixed bottom-0 inset-x-0 z-40 glass-card border-t border-border px-2 py-2 grid grid-cols-5 gap-1"
       >
         {nav.map((n) => {
           const active = loc.pathname.startsWith(n.to);
@@ -87,6 +102,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           );
         })}
       </motion.nav>
+      )}
     </div>
   );
 }
