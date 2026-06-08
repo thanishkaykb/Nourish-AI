@@ -6,6 +6,7 @@ import { getProfile } from "@/lib/profile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, ReferenceLine } from "recharts";
 import { format } from "date-fns";
@@ -28,8 +29,13 @@ function Measurements() {
     },
   });
   const [w, setW] = useState("");
-  const [bf, setBf] = useState("");
   const [waist, setWaist] = useState("");
+  const [chest, setChest] = useState("");
+  const [arm, setArm] = useState("");
+  const [thigh, setThigh] = useState("");
+  const [hips, setHips] = useState("");
+  const [height, setHeight] = useState("");
+  const [sex, setSex] = useState<string>("");
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -42,12 +48,23 @@ function Measurements() {
       const { error } = await supabase.from("measurements").insert({
         user_id: user.id,
         weight_kg: Number(w),
-        body_fat_pct: bf ? Number(bf) : null,
         waist_cm: waist ? Number(waist) : null,
+        chest_cm: chest ? Number(chest) : null,
+        arm_cm: arm ? Number(arm) : null,
+        thigh_cm: thigh ? Number(thigh) : null,
+        hips_cm: hips ? Number(hips) : null,
         notes: notes || null,
       });
       if (error) throw error;
-      setW(""); setBf(""); setWaist(""); setNotes("");
+      // Persist height/sex on profile if provided
+      const patch: any = {};
+      if (height) patch.height_cm = Number(height);
+      if (sex) patch.sex = sex;
+      if (Object.keys(patch).length) {
+        await supabase.from("profiles").update(patch).eq("id", user.id);
+        qc.invalidateQueries({ queryKey: ["profile"] });
+      }
+      setW(""); setWaist(""); setChest(""); setArm(""); setThigh(""); setHips(""); setNotes("");
       toast.success("Recorded!");
       qc.invalidateQueries({ queryKey: ["measurements"] });
     } catch (e: any) {
@@ -133,8 +150,23 @@ function Measurements() {
         <h3 className="font-display text-2xl mb-4">New check-in</h3>
         <div className="grid md:grid-cols-3 gap-3">
           <Field label="Weight (kg)" v={w} setV={setW} required />
-          <Field label="Body fat %" v={bf} setV={setBf} />
+          <Field label="Height (cm)" v={height} setV={setHeight} placeholder={p?.height_cm ? String(p.height_cm) : ""} />
+          <div>
+            <Label>Sex</Label>
+            <Select value={sex || p?.sex || ""} onValueChange={setSex}>
+              <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="male">Male</SelectItem>
+                <SelectItem value="female">Female</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <Field label="Waist (cm)" v={waist} setV={setWaist} />
+          <Field label="Chest (cm)" v={chest} setV={setChest} />
+          <Field label="Hips (cm)" v={hips} setV={setHips} />
+          <Field label="Arm (cm)" v={arm} setV={setArm} />
+          <Field label="Thigh (cm)" v={thigh} setV={setThigh} />
         </div>
         <div className="mt-3">
           <Label htmlFor="n">Notes</Label>
@@ -159,11 +191,11 @@ function Stat({ label, value, color = "" }: { label: string; value: string; colo
   );
 }
 
-function Field({ label, v, setV, required = false }: { label: string; v: string; setV: (s: string) => void; required?: boolean }) {
+function Field({ label, v, setV, required = false, placeholder }: { label: string; v: string; setV: (s: string) => void; required?: boolean; placeholder?: string }) {
   return (
     <div>
       <Label>{label}{required && " *"}</Label>
-      <Input type="number" value={v} onChange={(e) => setV(e.target.value)} />
+      <Input type="number" value={v} onChange={(e) => setV(e.target.value)} placeholder={placeholder} />
     </div>
   );
 }
