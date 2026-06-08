@@ -35,6 +35,18 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resetting, setResetting] = useState(false);
+
+  async function forgotPassword() {
+    if (!email || !email.includes("@")) { toast.error("Enter your email above first"); return; }
+    setResetting(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setResetting(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Password reset email sent.");
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -123,6 +135,13 @@ function AuthPage() {
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : mode === "signin" ? "Sign in" : "Create account"}
           </Button>
         </form>
+
+        {mode === "signin" && (
+          <button onClick={forgotPassword} disabled={resetting}
+            className="mt-3 text-xs text-muted-foreground hover:text-primary underline w-full text-center">
+            {resetting ? "Sending…" : "Forgot your password?"}
+          </button>
+        )}
 
         <p className="mt-6 text-sm text-muted-foreground text-center">
           {mode === "signin" ? "No account?" : "Already a member?"}{" "}
