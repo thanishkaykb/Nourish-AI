@@ -13,6 +13,7 @@ import { Loader2, Trash2, KeyRound, Mail, User } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_authenticated/settings")({
@@ -185,7 +186,6 @@ function Section({ icon, title, children }: { icon: React.ReactNode; title: stri
   );
 }
 
-import { AlertDialogTrigger } from "@/components/ui/alert-dialog";
 function DeleteTrigger() {
   return (
     <AlertDialogTrigger asChild>
