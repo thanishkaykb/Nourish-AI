@@ -2,6 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "bun run build",
   "installCommand": "bun install --frozen-lockfile",
+  "bunVersion": "1.x",
   "outputDirectory": ".vercel/output",
   "framework": null
 }
