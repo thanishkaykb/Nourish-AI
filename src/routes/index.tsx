@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Flame, Camera, Sparkles, LineChart, Zap, ShieldCheck, Brain, Activity } from "lucide-react";
 import { motion } from "framer-motion";
+import { BackButton } from "@/components/back-button";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -20,11 +21,14 @@ function Index() {
   return (
     <div className="min-h-screen">
       <header className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="h-9 w-9 rounded-xl bg-primary grid place-items-center mint-glow">
-            <Flame className="h-5 w-5 text-primary-foreground" />
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <div className="h-9 w-9 rounded-xl bg-primary grid place-items-center mint-glow">
+              <Flame className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <span className="font-display text-2xl">Nourish AI</span>
           </div>
-          <span className="font-display text-2xl">Nourish AI</span>
+          <BackButton />
         </div>
         <div className="flex items-center gap-2">
           <Link to="/auth"><Button variant="ghost" size="sm">Sign in</Button></Link>
