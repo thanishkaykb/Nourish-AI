@@ -317,26 +317,6 @@ Understand eating habits and long-term trends.
 
 ---
 
-## 📸 Screenshots
-
-### Landing Page
-
-_Add screenshot_
-
-### AI Food Scanner
-
-_Add screenshot_
-
-### Nutrition Dashboard
-
-_Add screenshot_
-
-### Progress Tracking
-
-_Add screenshot_
-
----
-
 ## 🏆 Research Relevance
 
 Nourish AI explores the intersection of:
