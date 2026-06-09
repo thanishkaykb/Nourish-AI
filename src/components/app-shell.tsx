@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { BackButton } from "@/components/back-button";
 import { useState } from "react";
 
 const nav = [
@@ -75,7 +76,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       )}
 
       <main className="p-4 md:p-10 max-w-6xl mx-auto pt-16">
-        <div className="md:hidden flex justify-end mb-2"><ThemeToggle /></div>
+        <div className="mb-4 flex items-center justify-between gap-2">
+          <BackButton fallback="/dashboard" />
+          <div className="md:hidden"><ThemeToggle /></div>
+        </div>
         {children}
       </main>
 
