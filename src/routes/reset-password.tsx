@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Flame, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { BackButton } from "@/components/back-button";
 
 export const Route = createFileRoute("/reset-password")({
   ssr: false,
@@ -35,11 +36,14 @@ function ResetPassword() {
     <div className="min-h-screen grid place-items-center px-4">
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md glass-card rounded-2xl p-8">
-        <div className="flex items-center gap-2 mb-6">
-          <div className="h-10 w-10 rounded-xl bg-primary grid place-items-center mint-glow">
-            <Flame className="h-5 w-5 text-primary-foreground" />
+        <div className="flex items-center justify-between gap-3 mb-6">
+          <div className="flex items-center gap-2">
+            <div className="h-10 w-10 rounded-xl bg-primary grid place-items-center mint-glow">
+              <Flame className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <span className="font-display text-3xl">Nourish AI</span>
           </div>
-          <span className="font-display text-3xl">Nourish AI</span>
+          <BackButton />
         </div>
         <h1 className="font-display text-3xl mb-2">Set a new password</h1>
         <p className="text-sm text-muted-foreground mb-6">Enter a new password to finish resetting your account.</p>

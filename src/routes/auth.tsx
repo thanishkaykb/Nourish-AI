@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Flame, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { z } from "zod";
+import { BackButton } from "@/components/back-button";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -100,11 +101,14 @@ function AuthPage() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md glass-card rounded-2xl p-8"
       >
-        <div className="flex items-center gap-2 mb-8">
-          <div className="h-10 w-10 rounded-xl bg-primary grid place-items-center mint-glow">
-            <Flame className="h-5 w-5 text-primary-foreground" />
+        <div className="flex items-center justify-between gap-3 mb-8">
+          <div className="flex items-center gap-2">
+            <div className="h-10 w-10 rounded-xl bg-primary grid place-items-center mint-glow">
+              <Flame className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <span className="font-display text-3xl">Nourish AI</span>
           </div>
-          <span className="font-display text-3xl">Nourish AI</span>
+          <BackButton />
         </div>
         <h1 className="font-display text-4xl mb-2">
           {mode === "signin" ? "Welcome back." : "Start your journey."}
